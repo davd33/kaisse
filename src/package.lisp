@@ -56,7 +56,9 @@
   (:use #:cl))
 
 (defpackage #:kaisse
-  (:use #:cl #:alexandria))
+  (:use #:cl #:alexandria
+        #:gtk #:gdk #:gdk-pixbuf #:gobject
+        #:glib #:gio #:pango #:cairo))
 
 (defpackage #:html
   (:use #:cl #:spinneret #:alexandria #:models)

@@ -53,6 +53,7 @@
                  (:file "api")
                  (:file "db")
                  (:file "models")
+                 (:file "kaisse")
                  (:file "html")
                  (:file "web-site"))))
   :in-order-to ((test-op (test-op "kaisse/tests"))))
