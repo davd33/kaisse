@@ -12,12 +12,7 @@
 
 (defun class-slots (class-symbol)
   "Return the list of slot definitions for CLASS-SYMBOL."
-  (funcall (alexandria:compose #'(lambda (class)
-                                     (handler-case (closer-mop:class-slots class)
-                                       (sb-int:simple-reference-error (e)
-                                         (format t "~&WARNING: Class not finalized. ~A" e)
-                                         (closer-mop:finalize-inheritance class)
-                                         (closer-mop:class-slots class))))
+  (funcall (alexandria:compose #'closer-mop:class-slots
                                #'find-class)
            class-symbol))
 
@@ -58,12 +53,7 @@ Available functions in the body:
                                      (mapcar #'(lambda (elt)
                                                  (closer-mop:slot-definition-name elt))
                                              slots))
-                                 #'(lambda (class)
-                                     (handler-case (closer-mop:class-slots class)
-                                       (sb-int:simple-reference-error (e)
-                                         (format t "~&WARNING: Class not finalized. ~A" e)
-                                         (closer-mop:finalize-inheritance class)
-                                         (closer-mop:class-slots class))))
+                                 #'closer-mop:class-slots
                                  #'find-class))
          (from-slots (funcall slot-names-fn from-class))
          (to-slots (funcall slot-names-fn to-class)))

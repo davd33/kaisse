@@ -34,4 +34,6 @@
 
 ;;; --- DEFINE TABLES
 
+;;(mito:deftable user ())
+
 ;;; --- QUERIES

@@ -7,10 +7,12 @@
   :version "0.0.1"
   :serial t
   :depends-on (;; HTML / HTTP Routes
-               ;; #:spinneret
-               ;; #:hunchentoot
-               ;; #:snooze
+               #:spinneret
+               #:hunchentoot
+               #:snooze
                ;; #:clack
+               ;; GTK 3
+               #:cl-cffi-gtk
                ;; URI deserialize
                ;; #:quri
                ;; Make HTTP requests

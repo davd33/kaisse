@@ -55,8 +55,12 @@
 (defpackage #:models
   (:use #:cl))
 
+(defpackage #:kaisse
+  (:use #:cl #:alexandria))
+
 (defpackage #:html
-  (:use #:cl #:spinneret #:alexandria #:models))
+  (:use #:cl #:spinneret #:alexandria #:models)
+  (:export #:secret-login))
 
 (defpackage #:web-site
   (:use #:cl

@@ -41,3 +41,24 @@ for a translation split into a list of several strings.
 ;;; --- TEMPLATES
 
 (defparameter *page-title* "Kaisse")
+
+(defun secret-login (login-error)
+  "There is a common password for all optimums.
+One solely password for each instance of the website."
+  (with-page (:title *page-title* :image-path nil)
+    (:div
+     :id "login"
+     (:div
+      :class "login-form"
+      (:p
+       :class (if login-error "error-msg" "info-msg")
+       (or login-error "Please give the password:"))
+      (:form
+       :method "POST"
+       (:input
+        :type "password"
+        :name "password"
+        :placeholder "...here")
+       (:input
+        :type "submit"
+        :value "Go"))))))
