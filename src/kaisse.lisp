@@ -43,15 +43,19 @@
                         :padding 3)
     box))
 
+(defun append-to-list-model (model lst)
+  (loop :for row :in lst
+        :do (apply #'gtk-list-store-set
+                   model
+                   (gtk-list-store-append model)
+                   row)))
+
 (defun new-model (column-types elements)
   (let ((model (make-instance 'gtk-list-store
                               :column-types column-types)))
 
-    (loop :for (name price) :in elements
-          :do (gtk-list-store-set model
-                                  (gtk-list-store-append model)
-                                  name
-                                  price))
+    (append-to-list-model model elements)
+
     model))
 
 (defun append-new-renderer (view column-name type column-id)
@@ -62,8 +66,8 @@
                                                            column-id)))
     (gtk-tree-view-append-column view column)))
 
-(defun new-view (column-types column-description column-elements on-change)
-  (let* ((model (new-model column-types column-elements))
+(defun new-view (column-types column-description on-change)
+  (let* ((model (new-model column-types nil))
          (view (make-instance 'gtk-tree-view
                               :model model))
          (select (gtk-tree-view-get-selection view)))
@@ -89,14 +93,17 @@
              (view (new-view '("gchararray" "guint")
                              '(("Product Name" "text")
                                ("Price" "text"))
-                             '(("banana" 2)
-                               ("orange" 1))
                              (lambda (view selection)
                                (let* ((model (gtk-tree-view-get-model view))
                                       (iter (gtk-tree-selection-get-selected selection))
                                       (name (gtk-tree-model-get-value model iter 0)))
-                                 (format t "You selected ~A.~%" name))))))
+                                 (format t "You selected ~A.~%" name)))))
+             (model (gtk-tree-view-get-model view)))
 
+        ;; fill model
+        (append-to-list-model model '(("banana" 1)
+                                      ("oranges" 23)
+                                      ("chocalate" 233)))
 
         ;; add to root
         (gtk-box-pack-end root view)
