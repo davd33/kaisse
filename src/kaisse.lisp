@@ -54,21 +54,23 @@
                                   price))
     model))
 
-(defmacro append-new-renderer (view column-name type column-id)
-  `(let* ((renderer (gtk-cell-renderer-text-new))
-          (column (gtk-tree-view-column-new-with-attributes ,column-name
-                                                            renderer
-                                                            ,type
-                                                            ,column-id)))
-     (gtk-tree-view-append-column ,view column)))
+(defun append-new-renderer (view column-name type column-id)
+  (let* ((renderer (gtk-cell-renderer-text-new))
+         (column (gtk-tree-view-column-new-with-attributes column-name
+                                                           renderer
+                                                           type
+                                                           column-id)))
+    (gtk-tree-view-append-column view column)))
 
-(defun new-view (model on-change)
-  (let* ((view (make-instance 'gtk-tree-view
+(defun new-view (column-types column-description column-elements on-change)
+  (let* ((model (new-model column-types column-elements))
+         (view (make-instance 'gtk-tree-view
                               :model model))
          (select (gtk-tree-view-get-selection view)))
 
-    (append-new-renderer view "Name" "text" 0)
-    (append-new-renderer view "Price" "text" 1)
+    (loop :for i :from 0 :below (length column-types)
+          :do (destructuring-bind (name type) (nth i column-description)
+                (append-new-renderer view name type i)))
 
     (setf (gtk-tree-selection-mode select) :single)
     (g-signal-connect select "changed"
@@ -84,8 +86,11 @@
     (gtk-progn "Kaisse" root
       (let* (;; welcome message
              (welcome (gtk-label-new "Welcome to Kaisse"))
-             (view (new-view (new-model '("gchararray" "guint") '(("banana" 2)
-                                                                  ("orange" 1)))
+             (view (new-view '("gchararray" "guint")
+                             '(("Product Name" "text")
+                               ("Price" "text"))
+                             '(("banana" 2)
+                               ("orange" 1))
                              (lambda (view selection)
                                (let* ((model (gtk-tree-view-get-model view))
                                       (iter (gtk-tree-selection-get-selected selection))
