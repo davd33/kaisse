@@ -83,6 +83,9 @@
 
     view))
 
+(defun mktext-col (name)
+  `(,name "text"))
+
 (defun kaisse ()
   "Kaisse, gtk GUI."
   (format t "Starting program.~%")
@@ -91,8 +94,8 @@
       (let* (;; welcome message
              (welcome (gtk-label-new "Welcome to Kaisse"))
              (view (new-view '("gchararray" "guint")
-                             '(("Product Name" "text")
-                               ("Price" "text"))
+                             (list (mktext-col "Product Name")
+                                   (mktext-col "Price"))
                              (lambda (view selection)
                                (let* ((model (gtk-tree-view-get-model view))
                                       (iter (gtk-tree-selection-get-selected selection))
