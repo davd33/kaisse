@@ -66,7 +66,7 @@
                                                            column-id)))
     (gtk-tree-view-append-column view column)))
 
-(defun new-view (column-types column-description on-change)
+(defun new-list-view (column-types column-description on-change)
   (let* ((model (new-model column-types nil))
          (view (make-instance 'gtk-tree-view
                               :model model))
@@ -86,28 +86,24 @@
 (defun mktext-col (name)
   `(,name "text"))
 
-(defun kaisse ()
+(defun configure-admin (password &optional email)
+  (let ((admin (make-instance 'db:user
+                              :name "admin"
+                              :password password
+                              :email email)))
+    (mito:insert-dao admin)))
+
+(defun first-run-p ()
+  "Whether the program is run for the first time."
+  (= 0 (mito:count-dao 'db:user)))
+
+(defun start-gui ()
   "Kaisse, gtk GUI."
   (format t "Starting program.~%")
   (let ((root (gtk-box-new :vertical 6)))
     (gtk-progn "Kaisse" root
-      (let* (;; welcome message
-             (welcome (gtk-label-new "Welcome to Kaisse"))
-             (view (new-view '("gchararray" "guint")
-                             (list (mktext-col "Product Name")
-                                   (mktext-col "Price"))
-                             (lambda (view selection)
-                               (let* ((model (gtk-tree-view-get-model view))
-                                      (iter (gtk-tree-selection-get-selected selection))
-                                      (name (gtk-tree-model-get-value model iter 0)))
-                                 (format t "You selected ~A.~%" name)))))
-             (model (gtk-tree-view-get-model view)))
-
-        ;; fill model
-        (append-to-list-model model '(("banana" 1)
-                                      ("oranges" 23)
-                                      ("chocalate" 233)))
+      (let* ((welcome-message (gtk-label-new "Welcome to Kaisse!")))
 
         ;; add to root
-        (gtk-box-pack-end root view)
-        (gtk-box-pack-end root welcome)))))
+        (when (first-run-p)
+          (gtk-box-pack-end root welcome-message))))))

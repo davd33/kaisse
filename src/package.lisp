@@ -50,7 +50,9 @@
 
 (defpackage #:db
   (:use #:cl)
-  (:export #:connect))
+  (:export #:connect
+           ;; the user db table and class
+           #:user))
 
 (defpackage #:models
   (:use #:cl))
@@ -58,7 +60,8 @@
 (defpackage #:kaisse
   (:use #:cl #:alexandria
         #:gtk #:gdk #:gdk-pixbuf #:gobject
-        #:glib #:gio #:pango #:cairo))
+        #:glib #:gio #:pango #:cairo)
+  (:export #:start-gui))
 
 (defpackage #:html
   (:use #:cl #:spinneret #:alexandria #:models)
