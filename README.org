@@ -10,8 +10,6 @@ commands in the REPL to load Kaisse:
 #+BEGIN_SRC lisp
 (setq ql:*local-project-directories* '(#P"~/projects"))
 (ql:quickload :kaisse)
-(in-package kaisse)
-(kaisse)
 #+END_SRC
 
 And that runs the main GTK+ window of Kaisse.
@@ -19,8 +17,10 @@ And that runs the main GTK+ window of Kaisse.
 ** Dev start GUI
 
 In order to start the GUI, the connection with postgres must be
-set. Type in the REPL as follows:
+set. Then, only, can you start the gui.
+Type in the REPL as follows:
 
 #+BEGIN_SRC lisp
 (db:connect "kaisse" "postgres" "admin")
+(kaisse:start-gui)
 #+END_SRC
