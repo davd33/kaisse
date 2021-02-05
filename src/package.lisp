@@ -57,10 +57,14 @@
 (defpackage #:models
   (:use #:cl))
 
-(defpackage #:kaisse
+(defpackage #:kaisse-gtk
   (:use #:cl #:alexandria
         #:gtk #:gdk #:gdk-pixbuf #:gobject
         #:glib #:gio #:pango #:cairo)
+  (:export #:start-gui))
+
+(defpackage #:kaisse-clim
+  (:use #:clim #:clim-lisp)
   (:export #:start-gui))
 
 (defpackage #:html

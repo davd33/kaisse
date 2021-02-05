@@ -1,4 +1,4 @@
-(in-package #:kaisse)
+(in-package #:kaisse-gtk)
 
 (defmacro gtk-progn (title root &body body)
   (let ((window (gensym "window")))

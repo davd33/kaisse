@@ -11,8 +11,9 @@
                #:hunchentoot
                #:snooze
                ;; #:clack
-               ;; GTK 3
+               ;; GUI
                #:cl-cffi-gtk
+               #:mcclim
                ;; URI deserialize
                ;; #:quri
                ;; Make HTTP requests
@@ -53,7 +54,8 @@
                  (:file "api")
                  (:file "db")
                  (:file "models")
-                 (:file "kaisse")
+                 (:file "kaisse-gtk")
+                 (:file "kaisse-clim")
                  (:file "html")
                  (:file "web-site"))))
   :in-order-to ((test-op (test-op "kaisse/tests"))))
