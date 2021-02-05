@@ -3,7 +3,18 @@
 (defvar *kaisse-app-frame* nil
   "Main frame of kaisse.")
 
-(defgeneric display (frame pane))
+(defun lang (id-kw)
+  (case id-kw
+    (:welcome-message "Welcome to kaisse")
+    (:no-user-yet "You need to set kaisse up")))
+
+(defun count-pixels (string &optional (char-pixel-lenght 16))
+  "Return the total pixel width for given STRING."
+  (* char-pixel-lenght (length string)))
+
+(defgeneric display-pane-with-view (frame pane view))
+
+;;; GADGET CLASSES
 
 (defclass abstract-simple-gadget (clim:basic-gadget) ())
 
@@ -11,24 +22,46 @@
   ((color :initform clim:+darkred+ :accessor gadget-color)
    (text :initform "" :accessor gadget-text :initarg :text)))
 
+(defclass generic-list-gadget (clim:basic-gadget) ())
+
+;;; VIEWS
+
+(defclass abstract-kaisse-view (clim:view) ())
+
+(defclass welcome-view (abstract-kaisse-view)
+  ((%message :initarg :message :reader welcome-view-message)))
+
+(defclass create-admin-view (abstract-kaisse-view) ())
+
 ;;; APPLICATION FRAME
 
-(define-application-frame kaisse ()
-  ((welcome-message :initform "Welcome to kaisse" :reader welcome-message))
-  (:panes (app :application :display-function #'display))
-  (:geometry :width 400 :height 200)
+(defparameter *default-view* (make-instance 'welcome-view :message (lang :welcome-message)))
+
+(define-application-frame kaisse-frame ()
+  ()
+  (:panes (app :application
+               :default-view *default-view*
+               :display-function #'display-main-pane))
+  (:geometry :width (count-pixels (lang :welcome-message) 10) :height 200)
   (:layouts (default (vertically () app))))
 
-(defmethod display ((frame kaisse) pane)
+(defun display-main-pane (frame pane)
+  (display-pane-with-view frame pane (stream-default-view pane)))
+
+(defmethod display-pane-with-view ((frame kaisse-frame) pane (view welcome-view))
   (clim:with-output-as-gadget (pane)
     (let ((w (bounding-rectangle-width pane))
           (h (bounding-rectangle-height pane)))
       (clim:make-pane 'generic-text-gadget
                       :width w
                       :height h
-                      :text (welcome-message frame)))))
+                      :text (welcome-view-message view)))))
 
-;;; GADGET FRAME
+;;; GADGETS
+
+(defmethod clim:handle-repaint ((gadget generic-list-gadget) region)
+  (declare (ignore region))
+  (clim:draw-circle* gadget 0 0 20))
 
 (defmethod clim:handle-repaint ((gadget generic-text-gadget) region)
   (declare (ignore region))
@@ -39,6 +72,10 @@
                      :align-x :center
                      :align-y :center
                      :ink (gadget-color gadget))))
+
+;; (defmethod clim:handle-event ((gadget generic-text-gadget)
+;;                               (event clim:pointer-button-press-event))
+;;   (clim:repaint-sheet gadget clim:+everywhere+))
 
 ;;; RUN A FRAME
 
