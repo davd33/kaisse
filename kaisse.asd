@@ -14,6 +14,7 @@
                ;; GUI
                #:cl-cffi-gtk
                #:mcclim
+               #:clim-listener
                ;; URI deserialize
                ;; #:quri
                ;; Make HTTP requests
