@@ -37,6 +37,9 @@
            #:add-value
            #:type-compatible-p))
 
+(defpackage #:lang
+  (:use #:cl))
+
 (defpackage #:resources
   (:use #:cl)
   (:export #:*profile*
