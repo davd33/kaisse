@@ -12,7 +12,8 @@
   "Return the total pixel width for given STRING."
   (* char-pixel-lenght (length string)))
 
-(defgeneric display-pane-with-view (frame pane view))
+(defgeneric display-pane-with-view (frame pane view)
+  (:documentation "Display a specific view on PANE."))
 
 ;;; GADGET CLASSES
 
@@ -42,20 +43,26 @@
   (:panes (app :application
                :default-view *default-view*
                :display-function #'display-main-pane))
-  (:geometry :width (count-pixels (lang :welcome-message) 10) :height 200)
+  (:geometry :width 1000 :height 800)
   (:layouts (default (vertically () app))))
 
 (defun display-main-pane (frame pane)
+  "Call the view to be displayed."
   (display-pane-with-view frame pane (stream-default-view pane)))
 
 (defmethod display-pane-with-view ((frame kaisse-frame) pane (view welcome-view))
   (clim:with-output-as-gadget (pane)
     (let ((w (bounding-rectangle-width pane))
           (h (bounding-rectangle-height pane)))
-      (clim:make-pane 'generic-text-gadget
-                      :width w
-                      :height h
-                      :text (welcome-view-message view)))))
+      (make-pane 'clim::raised-pane :border-width 1 :background +Gray83+
+                                    :width w :height h
+                                    :contents
+                                    (list (vertically ()
+                                            (clim:make-pane 'generic-text-gadget
+                                                            :width w :height 20
+                                                            :text (welcome-view-message view))
+                                            (clim:make-pane 'push-button
+                                                            :label "Ok")))))))
 
 ;;; GADGETS
 
