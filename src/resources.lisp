@@ -3,7 +3,7 @@
 (defvar *profile* :dev
   "Takes either :dev or :exe.")
 
-(defvar *system* :opti-shopylist
+(defvar *system* :kaisse
   "System being loaded.")
 
 (eval-when
